@@ -2,7 +2,7 @@
     #include <caffe/blob.hpp>
 #endif
 #include <openpose/gpu/cuda.hpp>
-#include <openpose/net/netCaffe.hpp>
+#include <openpose/net/netRT.hpp>
 #include <openpose/net/nmsCaffe.hpp>
 #include <openpose/net/resizeAndMergeCaffe.hpp>
 #include <openpose/pose/bodyPartConnectorCaffe.hpp>
@@ -24,7 +24,7 @@ namespace op
             const std::string mModelFolder;
             const bool mEnableGoogleLogging;
             // General parameters
-            std::vector<std::shared_ptr<NetCaffe>> spCaffeNets;
+            std::vector<std::shared_ptr<NetRT>> spCaffeNets;
             std::shared_ptr<ResizeAndMergeCaffe<float>> spResizeAndMergeCaffe;
             std::shared_ptr<NmsCaffe<float>> spNmsCaffe;
             std::shared_ptr<BodyPartConnectorCaffe<float>> spBodyPartConnectorCaffe;
@@ -102,7 +102,7 @@ namespace op
             }
         }
 
-        void addCaffeNetOnThread(std::vector<std::shared_ptr<NetCaffe>>& netCaffe,
+        void addCaffeNetOnThread(std::vector<std::shared_ptr<NetRT>>& netCaffe,
                                  std::vector<boost::shared_ptr<caffe::Blob<float>>>& caffeNetOutputBlob,
                                  const PoseModel poseModel, const int gpuId,
                                  const std::string& modelFolder, const bool enableGoogleLogging)
@@ -111,9 +111,8 @@ namespace op
             {
                 // Add Caffe Net
                 netCaffe.emplace_back(
-                    std::make_shared<NetCaffe>(modelFolder + getPoseProtoTxt(poseModel),
-                                               modelFolder + getPoseTrainedModel(poseModel),
-                                               gpuId, enableGoogleLogging)
+                    std::make_shared<NetRT>(modelFolder + "tensorrt/rt_model.gie",
+                                            gpuId, enableGoogleLogging)
                 );
                 // Initializing them on the thread
                 netCaffe.back()->initializationOnThread();

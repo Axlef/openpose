@@ -5,8 +5,8 @@ foreach (SUB_DIR ${SUB_DIRS})
 endforeach (SUB_DIR ${SUB_DIRS})
 
 # make the openpose.so/dll
-file(GLOB_RECURSE OP_HEADERS_UNFILTERED "${CMAKE_SOURCE_DIR}/include/openpose/*.h" 
-    "${CMAKE_SOURCE_DIR}/include/openpose/*.hpp" 
+file(GLOB_RECURSE OP_HEADERS_UNFILTERED "${CMAKE_SOURCE_DIR}/include/openpose/*.h"
+    "${CMAKE_SOURCE_DIR}/include/openpose/*.hpp"
     "${CMAKE_SOURCE_DIR}/include/openpose/*.hu")
 
 set(OP_HEADERS "")
@@ -45,12 +45,12 @@ elseif (WIN32)
     target_compile_definitions(openpose PRIVATE BOOST_ALL_NO_LIB)
   endif(${DL_FRAMEWORK} MATCHES "CAFFE")
   set_property(TARGET openpose PROPERTY FOLDER "OpenPose library")
-  
+
   foreach (SUB_DIR ${SUB_DIRS})
     string(TOUPPER ${SUB_DIR} SUB_DIR_UPPERCASE)
     source_group("Source Files\\${SUB_DIR}" FILES ${SOURCES_OP_${SUB_DIR_UPPERCASE}_WITH_CP} "*")
-    file(GLOB_RECURSE SUB_MOD_HEADERS "${CMAKE_SOURCE_DIR}/include/openpose/${SUB_DIR}/*.h" 
-        "${CMAKE_SOURCE_DIR}/include/openpose/${SUB_DIR}/*.hpp" 
+    file(GLOB_RECURSE SUB_MOD_HEADERS "${CMAKE_SOURCE_DIR}/include/openpose/${SUB_DIR}/*.h"
+        "${CMAKE_SOURCE_DIR}/include/openpose/${SUB_DIR}/*.hpp"
         "${CMAKE_SOURCE_DIR}/include/openpose/${SUB_DIR}/*.hu")
     source_group("Header Files\\${SUB_DIR}" FILES ${SUB_MOD_HEADERS})
   endforeach (SUB_DIR ${SUB_DIRS})

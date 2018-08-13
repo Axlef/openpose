@@ -50,7 +50,54 @@ For further details, check [all released features](doc/released_features.md) and
 9. [Citation](#citation)
 10. [License](#license)
 
+## Convert model to TensorRT
 
+For converting the Caffe model to TensorRT, we are going to use a nvidia tool. This tool, called `giexec`, is located in the samples folder of TensorRT and must be manually compiled (it's a way to check that your cuda and tensorrt libraries are correctly installed). It is recommended to first install the openpose lib (or at least the first step) to have all the files (e.g. caffe models)
+
+```
+cd /usr/src/tensorrt/samples/giexec
+sudo make
+```
+
+The giexec executable should now be in `/usr/src/tensorrt/samples/bin`
+
+In the following, OPENPOSE_CLONE_DIR refers to the cloned openpose folder (e.g openpose-rt repository)
+Modify the `OPENPOSE_CLONE_DIR/models/pose/coco/pose_deploy_linevec.prototxt` to specify the camera/image resolution for the network inference (dynamix size is not supported).
+The third `input_dim` corresponds to the height.
+The fourth `input_dim` corresponds to the width
+Example:
+```
+ input: "image"
+ input_dim: 1
+ input_dim: 3
+ input_dim: 240 # height = 240px
+ input_dim: 320 # width = 320px
+ layer {
+   name: "conv1_1"
+…
+```
+
+Convert the caffe model to TensorRT using giexec
+```
+/usr/src/tensorrt/bin/giexec --deploy=OPENPOSE_CLONE_DIR/models/pose/coco/pose_deploy_linevec.prototxt --output="net_output" --batch=1 --model=OPENPOSE_CLONE_DIR/models/pose/coco/pose_iter_440000.caffemodel --half2 --workspace=300 --engine=OPENPOSE_CLONE_DIR/models/tensorrt/rt_model.gie
+```
+The serialized engine name is hardcoded in openpose so keep this path and name !
+Giexec will display the size of the network output. Note the numbers (3 dimensions)
+
+In my case the network output size is `57x30x40`
+
+![](images/nt_output_size.png)
+
+Modify openpose code to work with your required network resolution in the file `OPENPOSE_CLONE_DIR/include/openpose/net/netRT.hpp`
+
+![](images/netrt_header.png)
+
+Compile again openpose to apply the change and install it
+```
+cd build
+sudo make install
+sudo cp -R OPENPOSE_CLONE_DIR/models /opt/openpose
+```
 
 ## Results
 ### 3-D Reconstruction Module

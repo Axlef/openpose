@@ -79,6 +79,8 @@ namespace caffe
 namespace boost
 {
     template <typename T> class shared_ptr; // E.g., boost::shared_ptr<caffe::Blob<float>>
+//    template <typename T, typename... Args>
+//        shared_ptr<T> make_shared(Args && ... args);
 }
 
 #endif // OPENPOSE_CORE_MACROS_HPP

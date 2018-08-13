@@ -4,6 +4,7 @@ set(SOURCES_OP_NET
     maximumBase.cu
     maximumCaffe.cpp
     netCaffe.cpp
+    netRT.cpp
     nmsBase.cpp
     nmsBase.cu
     nmsBaseCL.cpp
@@ -26,7 +27,7 @@ if (UNIX AND NOT APPLE)
   endif ()
 
   add_library(caffe SHARED IMPORTED)
-  set_property(TARGET caffe PROPERTY IMPORTED_LOCATION ${Caffe_LIBS}) 
+  set_property(TARGET caffe PROPERTY IMPORTED_LOCATION ${Caffe_LIBS})
   target_link_libraries(openpose_net caffe ${MKL_LIBS})
 
   if (BUILD_CAFFE)
